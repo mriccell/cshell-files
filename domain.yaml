@@ -1,0 +1,41 @@
+# Copyright 2017, 2019, Oracle Corporation and/or its affiliates. All rights reserved.
+# Licensed under the Universal Permissive License v 1.0 as shown at http://oss.oracle.com/licenses/upl.
+#
+# This is an example of how to define a Domain resource.  Please read through the comments which explain
+# what updates are needed.
+#
+apiVersion: "weblogic.oracle/v8"
+kind: Domain
+metadata:
+  name: sample-domain1
+  namespace: sample-domain1-ns
+  labels:
+    weblogic.resourceVersion: domain-v8
+    weblogic.domainUID: sample-domain1
+
+spec:
+  domainHome: /u01/oracle/user_projects/domains/sample-domain1
+  domainHomeInImage: true
+  image: "iad.ocir.io/weblogick8s/weblogic-operator-tutorial-store:2.0"
+  
+  webLogicCredentialsSecret:
+    name: sample-domain1-weblogic-credentials
+
+  serverStartPolicy: "IF_NEEDED"
+
+  serverPod:
+    env:
+    - name: JAVA_OPTIONS
+      value: "-Dweblogic.StdoutDebugEnabled=false"
+    - name: USER_MEM_ARGS
+      value: "-Xms64m -Xmx256m "
+
+  adminServer:
+    serverStartState: "RUNNING"
+
+  clusters:
+  - clusterName: cluster-1
+    serverStartState: "RUNNING"
+    replicas: 3
+
+
